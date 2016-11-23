@@ -18,9 +18,9 @@
 %%% API functions
 %%%===================================================================
 
--spec start_link/0 :: () -> {ok, Pid::term()} | ignore | {error, Error::term()}.
+-spec start_link() -> {ok, Pid::term()} | ignore | {error, Error::term()}.
 start_link() ->
-    supervisor:start_link({local, ?SERVER}, ?MODULE, []).
+  supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
 %%%===================================================================
 %%% Supervisor callbacks
@@ -28,19 +28,19 @@ start_link() ->
 
 %% @private
 init([]) ->
-    RestartStrategy = one_for_one,
-    MaxRestarts = 3,
-    MaxSecondsBetweenRestarts = 10,
-    SupFlags = {RestartStrategy,
-                MaxRestarts,
-                MaxSecondsBetweenRestarts},
+  RestartStrategy = one_for_one,
+  MaxRestarts = 3,
+  MaxSecondsBetweenRestarts = 10,
+  SupFlags = {RestartStrategy,
+    MaxRestarts,
+    MaxSecondsBetweenRestarts},
 
-    ChildSup =  {ecrn_cron_sup, {ecrn_cron_sup, start_link, []},
-                 permanent, 1000, supervisor, [ecrn_cron_sup]},
-    RegistrationServer  =  {ecrn_reg_server, {ecrn_reg, start_link, []},
-                            permanent, 1000, worker, [ecrn_reg]},
-    BroadcastServer  =  {ecrn_control, {ecrn_control, start_link, []},
-                         permanent, 1000, worker, [ecrn_control]},
+  ChildSup =  {ecrn_cron_sup, {ecrn_cron_sup, start_link, []},
+    permanent, 1000, supervisor, [ecrn_cron_sup]},
+  RegistrationServer  =  {ecrn_reg_server, {ecrn_reg, start_link, []},
+    permanent, 1000, worker, [ecrn_reg]},
+  BroadcastServer  =  {ecrn_control, {ecrn_control, start_link, []},
+    permanent, 1000, worker, [ecrn_control]},
 
 
-    {ok, {SupFlags, [ChildSup, RegistrationServer, BroadcastServer]}}.
+  {ok, {SupFlags, [ChildSup, RegistrationServer, BroadcastServer]}}.
